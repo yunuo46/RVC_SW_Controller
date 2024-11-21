@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # personal
+*.sln
+rvc_sw/*.vcxproj
