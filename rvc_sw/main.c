@@ -1,21 +1,24 @@
 ﻿#include <stdio.h>
 #include <pthread.h>
-#include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
+
 #include "rvc_sw.h"
 
-#define TICK 1000000
+#define TICK 100000000; 
 
 pthread_t inputThread, controllerThread;
 MotorCommand motor_state;
 CleanCommand cleaner_state;
 Sensors sensors;
+struct timespec req;
 int tick;
 
 void* input_thread(void* arg) {
     printf("Sensor Input (Front Left Right Back Dust) [Example: 1 0 1 0 1]\n");
     while (1) {
         sensors_input();
-        usleep(TICK);
+        nanosleep(&req, NULL);
     }
     return NULL;
 }
@@ -23,7 +26,7 @@ void* input_thread(void* arg) {
 void* controller_thread(void* arg) {
     while (1) {
         controller();
-        usleep(TICK);
+        nanosleep(&req, NULL);
     }
     return NULL;
 }
@@ -50,6 +53,8 @@ void init() {
     update_motor_state(MOVE_FORWARD);
     update_cleaner_state(ON);
     sensors = (Sensors){ false, false, false, false, false };
+    req.tv_sec = 0;
+    req.tv_nsec = TICK;
     tick = 0;
 }
 
