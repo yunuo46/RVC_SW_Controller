@@ -98,7 +98,7 @@ void controller() {
         else if (sensors.left && !sensors.right) {
             move_backward_to_turn_right();
         }
-        else if (sensors.front && sensors.left && sensors.right) {
+        else if (sensors.back && sensors.left && sensors.right) {
             move_backward_to_stop();
         }
         break;
@@ -172,7 +172,7 @@ void move_backward_to_turn_left() {
 void move_backward_to_stop() {
     printf("State: MOVE_BACKWARD -> STOP\n");
     update_motor_state(STOP);
-    update_cleaner_state(OFF);
+    exit(0);
 }
 
 void move_backward_to_turn_right() {
