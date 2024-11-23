@@ -183,8 +183,13 @@ void turn_right_to_move_forward() {
 void move_backward_to_turn_left() {
     printf("State: MOVE_BACKWARD -> TURN_LEFT\n");
     motor_interface(TURN_LEFT);
-    cleaner_interface(OFF);
 }
+
+void move_backward_to_turn_right() {
+    printf("State: MOVE_BACKWARD -> TURN_RIGHT\n");
+    motor_interface(TURN_RIGHT);
+}
+
 
 void move_backward_to_stop() {
     printf("State: MOVE_BACKWARD -> STOP\n");
@@ -192,14 +197,8 @@ void move_backward_to_stop() {
     exit(0);
 }
 
-void move_backward_to_turn_right() {
-    printf("State: MOVE_BACKWARD -> TURN_RIGHT\n");
-    motor_interface(TURN_RIGHT);
-    cleaner_interface(OFF);
-}
-
 void power_up_to_move_forward() {
-    if (sensor_state.front || tick >= 15) {
+    if (sensor_state.front || tick >= 10) {
         printf("State: POWER_UP -> MOVE_FORWARD\n");
         motor_interface(MOVE_FORWARD);
         cleaner_interface(ON);
