@@ -27,20 +27,20 @@ typedef struct {
     bool right;
     bool back;
     bool dust;
-} Sensors;
+} SensorState;
 
 // Global Variables
 extern MotorCommand motor_state;
 extern CleanCommand cleaner_state;
-extern Sensors sensors;
+extern SensorState sensor_state;
 
 
 // Function Declarations
 void init();
 void sensors_input();
 void controller();
-void update_cleaner_state(CleanCommand new_state);
-void update_motor_state(MotorCommand new_state);
+void cleaner_interface(CleanCommand new_state);
+void motor_interface(MotorCommand new_state);
 void move_forward_to_power_up();
 void move_forward_to_turn_left();
 void move_forward_to_move_backward();

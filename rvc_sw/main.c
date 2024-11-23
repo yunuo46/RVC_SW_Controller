@@ -10,7 +10,7 @@
 pthread_t inputThread, controllerThread;
 MotorCommand motor_state;
 CleanCommand cleaner_state;
-Sensors sensors;
+SensorState sensor_state;
 struct timespec req;
 int tick;
 
@@ -50,34 +50,38 @@ int main() {
 }
 
 void init() {
-    update_motor_state(MOVE_FORWARD);
-    update_cleaner_state(ON);
-    sensors = (Sensors){ false, false, false, false, false };
+    motor_interface(MOVE_FORWARD);
+    cleaner_interface(ON);
+    sensor_state = (SensorState){ false, false, false, false, false };
     req.tv_sec = 0;
     req.tv_nsec = TICK;
     tick = 0;
 }
 
 void sensors_input() {
+    int obstacle_location[4], dust_existence;
+
     printf("Waiting for Sensor Input...\n");
     scanf("%d %d %d %d %d",
-        (int*)&sensors.front,
-        (int*)&sensors.left,
-        (int*)&sensors.right,
-        (int*)&sensors.back,
-        (int*)&sensors.dust);
+        &obstacle_location[0], &obstacle_location[1], &obstacle_location[2], &obstacle_location[3], &dust_existence);
+
+    sensor_state.front = obstacle_location[0];
+    sensor_state.left = obstacle_location[1];
+    sensor_state.right = obstacle_location[2];
+    sensor_state.back = obstacle_location[3];
+    sensor_state.dust = dust_existence;
 }
 
 void controller() {
     tick++;
     switch (motor_state) {
     case MOVE_FORWARD:
-        if (sensors.front) {
-            if (!sensors.left) {
+        if (sensor_state.front) {
+            if (!sensor_state.left) {
                 reset_tick();
                 move_forward_to_turn_left();
             }
-            else if (sensors.left && !sensors.right) {
+            else if (sensor_state.left && !sensor_state.right) {
                 reset_tick();
                 move_forward_to_turn_right();
             }
@@ -85,7 +89,7 @@ void controller() {
                 move_forward_to_move_backward();
             }
         }
-        else if (sensors.dust) {
+        else if (sensor_state.dust) {
             reset_tick();
             move_forward_to_power_up();
         }
@@ -97,13 +101,13 @@ void controller() {
         turn_right_to_move_forward();
         break;
     case MOVE_BACKWARD:
-        if (!sensors.left && !sensors.right) {
+        if (!sensor_state.left && !sensor_state.right) {
             move_backward_to_turn_left();
         }
-        else if (sensors.left && !sensors.right) {
+        else if (sensor_state.left && !sensor_state.right) {
             move_backward_to_turn_right();
         }
-        else if (sensors.back && sensors.left && sensors.right) {
+        else if (sensor_state.back && sensor_state.left && sensor_state.right) {
             move_backward_to_stop();
         }
         break;
@@ -116,44 +120,44 @@ void controller() {
     }
 }
 
-void update_cleaner_state(CleanCommand new_state) {
-    cleaner_state = new_state;
+void cleaner_interface(CleanCommand next_cleaner_state) {
+    cleaner_state = next_cleaner_state;
 }
 
-void update_motor_state(MotorCommand new_state) {
-    motor_state = new_state;
+void motor_interface(MotorCommand next_motor_state) {
+    motor_state = next_motor_state;
 }
 
 void move_forward_to_power_up() {
     printf("State: MOVE_FORWARD -> POWER_UP\n");
-    update_motor_state(POWER_UP);
-    update_cleaner_state(UP);
+    motor_interface(POWER_UP);
+    cleaner_interface(UP);
 }
 
 void move_forward_to_turn_left() {
     printf("State: MOVE_FORWARD -> TURN_LEFT\n");
-    update_motor_state(TURN_LEFT);
-    update_cleaner_state(OFF);
+    motor_interface(TURN_LEFT);
+    cleaner_interface(OFF);
 }
 
 void move_forward_to_move_backward() {
     printf("State: MOVE_FORWARD -> MOVE_BACKWARD\n");
-    update_motor_state(MOVE_BACKWARD);
-    update_cleaner_state(OFF);
+    motor_interface(MOVE_BACKWARD);
+    cleaner_interface(OFF);
 }
 
 void move_forward_to_turn_right() {
     printf("State: MOVE_FORWARD -> TURN_RIGHT\n");
-    update_motor_state(TURN_RIGHT);
-    update_cleaner_state(OFF);
+    motor_interface(TURN_RIGHT);
+    cleaner_interface(OFF);
 }
 
 void turn_left_to_move_forward() {
     if (tick >= 15) {
         printf("State: TURN_LEFT -> MOVE_FORWARD\n");
-        update_motor_state(MOVE_FORWARD);
-        update_cleaner_state(ON);
-        sensors.front = false;
+        motor_interface(MOVE_FORWARD);
+        cleaner_interface(ON);
+        sensor_state.front = false;
         reset_tick();
     }
 }
@@ -161,36 +165,36 @@ void turn_left_to_move_forward() {
 void turn_right_to_move_forward() {
     if (tick >= 15) {
         printf("State: TURN_RIGHT -> MOVE_FORWARD\n");
-        update_motor_state(MOVE_FORWARD);
-        update_cleaner_state(ON);
-        sensors.front = false;
+        motor_interface(MOVE_FORWARD);
+        cleaner_interface(ON);
+        sensor_state.front = false;
         reset_tick();
     }
 }
 
 void move_backward_to_turn_left() {
     printf("State: MOVE_BACKWARD -> TURN_LEFT\n");
-    update_motor_state(TURN_LEFT);
-    update_cleaner_state(OFF);
+    motor_interface(TURN_LEFT);
+    cleaner_interface(OFF);
 }
 
 void move_backward_to_stop() {
     printf("State: MOVE_BACKWARD -> STOP\n");
-    update_motor_state(STOP);
+    motor_interface(STOP);
     exit(0);
 }
 
 void move_backward_to_turn_right() {
     printf("State: MOVE_BACKWARD -> TURN_RIGHT\n");
-    update_motor_state(TURN_RIGHT);
-    update_cleaner_state(OFF);
+    motor_interface(TURN_RIGHT);
+    cleaner_interface(OFF);
 }
 
 void power_up_to_move_forward() {
-    if (sensors.front || tick >= 15) {
+    if (sensor_state.front || tick >= 15) {
         printf("State: POWER_UP -> MOVE_FORWARD\n");
-        update_motor_state(MOVE_FORWARD);
-        update_cleaner_state(ON);
+        motor_interface(MOVE_FORWARD);
+        cleaner_interface(ON);
         reset_tick();
     }
 }
