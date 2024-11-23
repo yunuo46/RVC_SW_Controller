@@ -62,6 +62,7 @@ void init() {
 
 void sensors_input() {
     printf("Waiting for Sensor Input...\n");
+    // Determine obstacle location & dust existence
     if (scanf("%d %d %d %d %d",
         (int *) & obstacle_location.front_obstacle,
         (int *) & obstacle_location.left_obstacle,
@@ -71,6 +72,7 @@ void sensors_input() {
         printf("Invalid input! Please provide 5 integer values.\n");
         return;
     }
+    // Update sensor state
     sensor_state.front = obstacle_location.front_obstacle;
     sensor_state.left = obstacle_location.left_obstacle;
     sensor_state.right = obstacle_location.right_obstacle;
