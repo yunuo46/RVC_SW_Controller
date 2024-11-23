@@ -10,6 +10,8 @@
 pthread_t inputThread, controllerThread;
 MotorCommand motor_state;
 CleanCommand cleaner_state;
+ObstacleLocation obstacle_location;
+bool dust_existence;
 SensorState sensor_state;
 struct timespec req;
 int tick;
@@ -52,23 +54,27 @@ int main() {
 void init() {
     motor_interface(MOVE_FORWARD);
     cleaner_interface(ON);
-    sensor_state = (SensorState){ false, false, false, false, false };
+
     req.tv_sec = 0;
     req.tv_nsec = TICK;
     tick = 0;
 }
 
 void sensors_input() {
-    int obstacle_location[4], dust_existence;
-
     printf("Waiting for Sensor Input...\n");
-    scanf("%d %d %d %d %d",
-        &obstacle_location[0], &obstacle_location[1], &obstacle_location[2], &obstacle_location[3], &dust_existence);
-
-    sensor_state.front = obstacle_location[0];
-    sensor_state.left = obstacle_location[1];
-    sensor_state.right = obstacle_location[2];
-    sensor_state.back = obstacle_location[3];
+    if (scanf("%d %d %d %d %d",
+        (int *) & obstacle_location.front_obstacle,
+        (int *) & obstacle_location.left_obstacle,
+        (int *) & obstacle_location.right_obstacle,
+        (int *) & obstacle_location.back_obstacle,
+        (int *) & dust_existence) != 5) {
+        printf("Invalid input! Please provide 5 integer values.\n");
+        return;
+    }
+    sensor_state.front = obstacle_location.front_obstacle;
+    sensor_state.left = obstacle_location.left_obstacle;
+    sensor_state.right = obstacle_location.right_obstacle;
+    sensor_state.back = obstacle_location.back_obstacle;
     sensor_state.dust = dust_existence;
 }
 

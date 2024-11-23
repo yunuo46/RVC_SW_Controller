@@ -20,7 +20,15 @@ typedef enum {
     UP
 } CleanCommand;
 
-// Sensors Struct
+// Obstacle Location Struct
+typedef struct {
+    bool front_obstacle;
+    bool left_obstacle;
+    bool right_obstacle;
+    bool back_obstacle;
+} ObstacleLocation;
+
+// Sensor State Struct
 typedef struct {
     bool front;
     bool left;
@@ -32,8 +40,9 @@ typedef struct {
 // Global Variables
 extern MotorCommand motor_state;
 extern CleanCommand cleaner_state;
+extern ObstacleLocation obstacle_location;
+extern bool dust_existence;
 extern SensorState sensor_state;
-
 
 // Function Declarations
 void init();
