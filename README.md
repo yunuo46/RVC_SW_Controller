@@ -25,3 +25,25 @@ The project uses a `Makefile` to automate the build process. The `Makefile` incl
 
 - **`make`**: Compiles the `main.c` file and creates the `main` executable.
 - **`make clean`**: Removes the compiled object files (`main.o`) and the executable (`main`).
+
+### Makefile Variables
+- CC = gcc: Specifies the compiler to use (GCC).
+- CFLAGS = -pthread: Includes the pthread library for multi-threading support.
+- OBJ = main.o: Specifies the object file generated from the source code.
+- EXEC = main: Specifies the name of the final executable.
+
+## Build and Run Instructions
+### Build the Program
+To compile the program, run the following command
+
+    make
+
+### Run the Program
+After building the program, execute it with
+
+    ./main
+
+### Clean the Build
+To clean the object files and executable, use
+
+    make clean
