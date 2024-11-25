@@ -19,18 +19,25 @@ int tick;
 void* input_thread(void* arg) {
     printf("Sensor Input (Front Left Right Back Dust)\n");
     printf("[1: true, 0: false] [Example: 1 0 1 0 1]\n");
+
+    pthread_t current_thread = pthread_self();
+    pthread_cleanup_push(thread_cleanup_handler, (void*)&current_thread);
     while (1) {
         sensors_input();
         nanosleep(&req, NULL);
     }
+    pthread_cleanup_pop(0);
     return NULL;
 }
 
 void* controller_thread(void* arg) {
+    pthread_t current_thread = pthread_self();
+    pthread_cleanup_push(thread_cleanup_handler, (void*)&current_thread);
     while (1) {
         controller();
         nanosleep(&req, NULL);
     }
+    pthread_cleanup_pop(0);
     return NULL;
 }
 
@@ -48,7 +55,7 @@ int main() {
     // Wait for Threads
     pthread_join(inputThread, NULL);
     pthread_join(controllerThread, NULL);
-
+    printf("Both threads have finished. Exiting main program.\n");
     return 0;
 }
 
@@ -204,7 +211,7 @@ void move_backward_to_stop() {
     printf("Motor State: MOVE_BACKWARD -> STOP\n");
     printf("Cleaner State: OFF\n");
     motor_interface(STOP);
-    exit(0);
+    stop_threads();
 }
 
 void power_up_to_move_forward() {
@@ -219,4 +226,15 @@ void power_up_to_move_forward() {
 
 void reset_tick() {
     tick = 0;
+}
+
+void thread_cleanup_handler(void* arg) {
+    pthread_t* thread_id = (pthread_t*)arg;
+    printf("Thread %lu is being cancelled, clean up initiated.\n", *thread_id);
+}
+
+void stop_threads() {
+    printf("Sending cancel request to threads...\n");
+    pthread_cancel(inputThread);
+    pthread_cancel(controllerThread);
 }

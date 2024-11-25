@@ -61,5 +61,7 @@ void move_backward_to_stop();
 void move_backward_to_turn_right();
 void power_up_to_move_forward();
 void reset_tick();
+void thread_cleanup_handler(void* arg);
+void stop_threads();
 
 #endif
