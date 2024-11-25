@@ -5,7 +5,7 @@
 
 #include "rvc_sw.h"
 
-#define TICK 100000000; 
+#define TICK 100000000 
 
 pthread_t inputThread, controllerThread;
 MotorCommand motor_state;
@@ -17,7 +17,8 @@ struct timespec req;
 int tick;
 
 void* input_thread(void* arg) {
-    printf("Sensor Input (Front Left Right Back Dust) [Example: 1 0 1 0 1]\n");
+    printf("Sensor Input (Front Left Right Back Dust)\n");
+    printf("[1: true, 0: false] [Example: 1 0 1 0 1]\n");
     while (1) {
         sensors_input();
         nanosleep(&req, NULL);
