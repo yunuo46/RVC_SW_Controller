@@ -7,8 +7,10 @@ Building a Robot Vacuum Cleaner Software Controller with SASD
 
 - **Operating System**: Linux 
 - **Compiler**: GCC (GNU Compiler Collection) version 7.0 or later
+- **C Standard**: C99
 - **Required Libraries**:
   - **pthread** (required for multi-threading)
+  - **criterion**: For unit testing the software logic
   - **stdio.h**, **stdlib.h**, **time.h**, **stdbool.h** (standard libraries)
 
 The program creates two threads (`input_thread`, `controller_thread`) to handle sensor input and control motor/cleaner behavior based on given states.
@@ -23,14 +25,14 @@ The project uses a `Makefile` to automate the build process. The `Makefile` incl
 
 ### Makefile Targets
 
-- **`make`**: Compiles the `main.c` file and creates the `main` executable.
-- **`make clean`**: Removes the compiled object files (`main.o`) and the executable (`main`).
+#### Build Targets
+- **`make`**: Compiles the source files (`main.c`, `rvc_sw.c`) into an executable (`main`)
+- **`make test`**: Compiles the test files (`test.c`, `rvc_sw.c`) into a test executable (`test`) linked with the `criterion` library
 
-### Makefile Variables
-- CC = gcc: Specifies the compiler to use (GCC).
-- CFLAGS = -pthread: Includes the pthread library for multi-threading support.
-- OBJ = main.o: Specifies the object file generated from the source code.
-- EXEC = main: Specifies the name of the final executable.
+#### Clean Targets
+- **`make clean`**: Removes the compiled object files (`*.o`) and the main executable (`main`)
+- **`make test_clean`**: Removes the test executable (`test`)
+- **`make full_clean`**: Cleans up both build and test-related files
 
 ## Build and Run Instructions
 ### Build the Program
@@ -47,3 +49,11 @@ After building the program, execute it with
 To clean the object files and executable, use
 
     make clean
+
+## Testing Report
+### Results Summary:
+- All 26 tests passed successfully.
+- No tests failed or crashed during the testing process.
+
+### Screenshot
+![test](https://github.com/user-attachments/assets/40a871cd-441b-4e15-a58e-bc0b0e179268)
