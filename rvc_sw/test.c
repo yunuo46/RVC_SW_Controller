@@ -11,6 +11,8 @@
 #include "rvc_sw.h"
 
 void setup(void) {
+    FILE* original_stdout = stdout;
+    stdout = fopen("/dev/null", "w");
     init();
 }
 
@@ -26,6 +28,11 @@ ReportHook(PRE_ALL)(struct criterion_test_set* tests) {
 
 ReportHook(PRE_INIT)(struct criterion_test* test) {
     printf("testing %s in category %s\n", test->name, test->category);
+}
+
+ReportHook(POST_ALL)(struct criterion_global_stats* stats) {
+    (void)stats;
+    puts("criterion_fini");
 }
 
 bool compare_sensor_state(const SensorState* actual, const SensorState* expected) {
