@@ -1,21 +1,21 @@
-# 변수 정의
-CC = gcc               # 컴파일러
-CFLAGS = -pthread      # 컴파일 옵션
-SRC = main.c            # 소스 파일
-OBJ = main.o            # 오브젝트 파일
-EXEC = main             # 최종 실행 파일명
+# Variable definitions
+CC = gcc               # Compiler
+CFLAGS = -pthread -std=c99  # Compilation options
+SRC = main.c            # Source file
+OBJ = main.o            # Object file
+EXEC = main             # Final executable file name
 
-# 기본 타겟
+# Default target
 all: $(EXEC)
 
-# 실행 파일 생성 규칙
+# Rule to create the executable file
 $(EXEC): $(OBJ)
 	$(CC) $(OBJ) -o $(EXEC) $(CFLAGS)
 
-# 오브젝트 파일 생성 규칙
+# Rule to create the object file
 $(OBJ): $(SRC) rvc_sw.h
 	$(CC) $(CFLAGS) -c $(SRC)
 
-# 빌드된 파일 삭제 규칙
+# Rule to clean up built files
 clean:
 	rm -f $(OBJ) $(EXEC)
