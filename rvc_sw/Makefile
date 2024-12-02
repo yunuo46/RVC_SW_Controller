@@ -4,6 +4,8 @@ CFLAGS = -pthread -std=c99  # Compilation options
 SRC = main.c            # Source file
 OBJ = main.o            # Object file
 EXEC = main             # Final executable file name
+TSSRC = test.c			# Test Source file
+TSAGS = -lcriterion		# Test options
 
 # Default target
 all: $(EXEC)
@@ -19,3 +21,7 @@ $(OBJ): $(SRC) rvc_sw.h
 # Rule to clean up built files
 clean:
 	rm -f $(OBJ) $(EXEC)
+
+# Rule to testing
+test:
+	$(CC) -o test $(TSSRC) $(TSAGS)
