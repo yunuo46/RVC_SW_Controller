@@ -1,5 +1,5 @@
-#ifndef RVC_CONTROLLER_H
-#define RVC_CONTROLLER_H
+#ifndef RVC_SW_H
+#define RVC_SW_H
 
 #include <stdbool.h>
 
@@ -43,6 +43,9 @@ extern CleanCommand cleaner_state;
 extern ObstacleLocation obstacle_location;
 extern bool dust_existence;
 extern SensorState sensor_state;
+extern int tick;
+extern pthread_t inputThread, controllerThread;
+extern struct timespec req;
 
 // Function Declarations
 void init();
@@ -61,7 +64,11 @@ void move_backward_to_stop();
 void move_backward_to_turn_right();
 void power_up_to_move_forward();
 void reset_tick();
+
+// Thread Function Declarations
 void thread_cleanup_handler(void* arg);
 void stop_threads();
+void* input_thread(void* arg);
+void* controller_thread(void* arg);
 
-#endif
+#endif // RVC_SW_H
