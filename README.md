@@ -10,7 +10,7 @@ Building a Robot Vacuum Cleaner Software Controller with SASD
 - **C Standard**: C99
 - **Required Libraries**:
   - **pthread** (required for multi-threading)
-  - **criterion**: For unit testing the software logic
+  - **criterion**: For unit testing the software logic ([GitHub Repository](https://github.com/Snaipe/Criterion))
   - **stdio.h**, **stdlib.h**, **time.h**, **stdbool.h** (standard libraries)
 
 The program creates two threads (`input_thread`, `controller_thread`) to handle sensor input and control motor/cleaner behavior based on given states.
@@ -35,6 +35,13 @@ The project uses a `Makefile` to automate the build process. The `Makefile` incl
 - **`make full_clean`**: Cleans up both build and test-related files
 
 ## Build and Run Instructions
+### Install Dependencies
+Before building the program, ensure you have the required dependencies installed. For Ubuntu, run
+
+```
+sudo apt-get install libcriterion-dev
+```
+
 ### Build the Program
 To compile the program, run the following command
 
